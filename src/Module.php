@@ -6,8 +6,13 @@ use yii\base\BootstrapInterface;
 use yii\base\Module as BaseModule;
 
 
-class Module extends BaseModule implements BootstrapInterface
+class Module extends BaseModule
 {
+
+//    public $defaultRoute = 'term/index';
+//
+//    public $controllerNamespace = 'Klisl\statistics\controllers';
+
     public function bootstrap($app)
     {
 
@@ -15,5 +20,10 @@ class Module extends BaseModule implements BootstrapInterface
 //            // остальной код
 //            exit('Готово');
 //        });
+    }
+
+    public function init()
+    {
+        parent::init();
     }
 }
