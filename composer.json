@@ -1,0 +1,30 @@
+{
+    "name": "klisl/yii2-statistics",
+    "description": "Package",
+  "type": "yii2-extension",
+  "keywords": [
+        "yii2",
+        "statistics"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sergey Klimenchuk",
+            "email": "ksl80@ukr.net",
+			"homepage": "https://github.com/klisl/yii2-statistics",
+			"role": "Developer"
+        }
+    ],
+	"minimum-stability": "stable",
+	"require": {
+        "yiisoft/yii2": "~2.0.0"
+    },
+    "extra": {
+        "bootstrap": "Klisl\\Statistics\\Module"
+    },
+  "autoload": {
+        "psr-4": {
+			"Klisl\\Statistics\\": "src"
+        }
+    }
+}
