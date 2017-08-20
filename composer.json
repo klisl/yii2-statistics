@@ -20,7 +20,7 @@
         "yiisoft/yii2": "~2.0.0"
     },
     "extra": {
-        "bootstrap": "Klisl\\Statistics\\Module"
+        "bootstrap": "Klisl\\Statistics\\Bootstrap"
     },
   "autoload": {
         "psr-4": {
