@@ -12,7 +12,7 @@
     if (isset($count_ip[0])){
 //        $date = $count_ip[0]->date_ip->format('d.m.Y');
 
-        $date = date("Y-m-d",$count_ip[0]->date_ip);
+        $date = date("d.m.Y",$count_ip[0]->date_ip);
 //        dd($date);
     } else $date = date("d.m.Y",time()); //Если дата не установлена, то выводим за сегодняшний день
 ?>
@@ -75,14 +75,14 @@
              * Если да, то не добавляем в общий счетчик посетителей за день
              */
             $find = $value->find_ip_by_day($value->ip, $value->date_ip);
-
+//dd(count($find));
             //Если такого IP еще не было в этот день
-            if(empty($find)){
+            if(count($find)){
                 $count++;
                 if (!$stat_ip) $count_day++; //для фильтра по определенному IP
                 $old = 0;
             } else {
-                $old = $find->count();
+                $old = count($find);
             }
 
 
@@ -95,15 +95,16 @@
 
         if ($transition == 1 ) {
 
+            $date_new = date("d.m.Y",$value->date_ip);
             if ($show_new_date && !$old) {
 //                echo "class='tr_first red'><td colspan='4'>{$value->date_ip->format('d.m.Y')}</td></tr>";
-                echo "class='tr_first red'><td colspan='4'>{date(\"d.m.Y\",$value->date_ip)}</td></tr>";
+                echo "class='tr_first red'><td colspan='4'>$date_new</td></tr>";
                 echo "<tr class='tr_first'><td colspan='4'>НОВЫЙ ПОСЕТИТЕЛЬ</td></tr>";
 
             }
             else if ($show_new_date && $old) {
 //                echo "class='tr_first red'><td colspan='4'>{$value->date_ip->format('d.m.Y')}</td></tr>";
-                echo "class='tr_first red'><td colspan='4'>{date(\"d.m.Y\",$value->date_ip)}</td></tr>";
+                echo "class='tr_first red'><td colspan='4'>$date_new</td></tr>";
                 echo "<tr class='tr_first'><td colspan='4'>уже был</td></tr>";
             }
             elseif ($old) {

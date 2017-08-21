@@ -13,10 +13,12 @@ class Bootstrap implements BootstrapInterface{
     //Метод, который вызывается автоматически при каждом запросе
     public function bootstrap($app)
     {
+//        dd(1);
         //Правила маршрутизации
         $app->getUrlManager()->addRules([
             'statistics' => 'statistics/stat/index',
-            'statistics/stat/forms' => 'statistics/stat/forms',
+//            'statistics/enter' => 'statistics/stat/enter',
+            'statistics/forms' => 'statistics/stat/forms',
         ], false);
 
         /*

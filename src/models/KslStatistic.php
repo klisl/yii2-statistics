@@ -24,21 +24,25 @@ class KslStatistic extends ActiveRecord{
         return '{{%ksl_ip_count}}';
     }
 
+
     //проверка наличия IP в черном списке (которые не надо выводить и сохранять в БД)
     //если есть хоть одна строка, то вернет true
     public function inspection_black_list($ip){
 
         $check = $this
+            ->find()
             ->where(['=', 'ip', $ip])
-            ->where(['=', 'black_list_ip', 1])
-            ->get();
+            ->andWhere(['=', 'black_list_ip', 1])
+            ->all();
 
-        if (!$check->isEmpty()) return true;
+        if (count($check)) return true;
     }
+
 
     public function setCount($ip, $str_url, $black_list_ip = 0){
         $this->ip = $ip;
         $this->str_url = $str_url;
+        $this->date_ip = time();
         $this->black_list_ip = $black_list_ip;
         $this->save();
     }
@@ -51,35 +55,37 @@ class KslStatistic extends ActiveRecord{
 
         //за сколько дней показывать по-умолчанию
 //        $days_show_stat = config('statistics.days_default') -1 ;
-        $days_show_stat = Yii::$app->params['statistics']['days_default'] -1 ;
+        $days_show_stat = Yii::$app->params['statistics']['days_default'] - 1 ;
+//        dd($days_show_stat);
 
-
-        $date_unix = $days_ago = time() - (86400 * $days_show_stat) - $sec_todey;
+        $days_ago = time() - (86400 * $days_show_stat) - $sec_todey;
         //В формат 2017-08-05 00:00:00 как в БД
 //        $days_ago = date("Y-m-d H:i:s",$date_unix);
 
+//        dd($days_ago);
         //Выбор диапазона между двумя датами
         if(in_array( 'date_ip',$condition)) {
-
+//            dd($condition);
             $count_ip = $this
                 ->find()
                 ->where(['<', 'black_list_ip', 1])
-                ->whereBetween($condition[0], [date("Y-m-d H:i:s",$condition[1]), date("Y-m-d H:i:s",$condition[2])])
+//                ->whereBetween($condition[0], [date("Y-m-d H:i:s",$condition[1]), date("Y-m-d H:i:s",$condition[2])])
+                ->andWhere(["between", $condition[0], $condition[1] , $condition[2]])
                 ->orderBy('date_ip')
                 ->all();
 
         } elseif($condition){
-
+//dd($condition);
             $count_ip = $this
                 ->find()
                 ->where(['<', 'black_list_ip', 1])
                 ->andWhere(['>', 'date_ip', $days_ago])
-                ->andWhere(['=', 'ip', $condition])
+                ->andWhere(['=', 'ip', $condition['ip']])
                 ->orderBy('date_ip')
                 ->all();
 
         } else {
-//            dd($days_ago);
+
             $count_ip = $this
                 ->find()
 //                ->where('black_list_ip', '<', 1)
@@ -148,11 +154,13 @@ class KslStatistic extends ActiveRecord{
 
     //Добавить в черн список
     public function set_black_list($ip, $comment=''){
-        $verify_black_list = $this->find()->where('ip', $ip)->get();
-
+//        dd($comment);
+        $verify_black_list = $this->find()->where(['=', 'ip', $ip])->all();
+//        dd($verify_black_list);
         //Если такой IP уже есть (коллекция не пуста)
-        if(!$verify_black_list->isEmpty()){
+        if(!empty($verify_black_list)){
             foreach ($verify_black_list as $str){
+//                dd($str);
                 $str->black_list_ip = 1;
                 $str->comment = $comment;
                 $res = $str->save();
@@ -165,8 +173,14 @@ class KslStatistic extends ActiveRecord{
             $res = $this->save();
         }
 
-        if($res) session()->flash('status', 'IP '.$ip.' добавлен в черный список');
-        else session()->flash('error', 'Ошибка добавления IP в черный список');
+        $session = Yii::$app->session;
+
+
+        if($res){
+            $session->setFlash('success', 'IP '.$ip.' добавлен в черный список');
+        } else {
+            $session->setFlash('danger', 'Ошибка добавления IP в черный список');
+        }
     }
 
 
@@ -175,15 +189,21 @@ class KslStatistic extends ActiveRecord{
     public function remove_black_list($ip){
         $res = null;
 
-        $verify_black_list = $this->find()->where('ip', $ip)->get();
+        $verify_black_list = $this->find()->where(['=', 'ip', $ip])->all();
         foreach ($verify_black_list as $str){
             $str->black_list_ip = 0;
             $str->comment = null;
             $res = $str->save();
         }
 
-        if($res) session()->flash('status', 'IP '.$ip.' удален из черного списка');
-        else session()->flash('error', 'Ошибка удаления IP из черного списка.');
+        $session = Yii::$app->session;
+
+        if($res){
+            $session->setFlash('success', 'IP '.$ip.' удален из черного списка');
+        } else {
+
+            $session->setFlash('danger', 'Ошибка удаления IP из черного списка.');
+        }
     }
 
 
@@ -196,12 +216,13 @@ class KslStatistic extends ActiveRecord{
         //Формат
         $old_time = date("Y-m-d H:i:s",$time);
 
-        $old = $this->find()->where('date_ip', '<', $old_time)->get();
+        $old = $this->find()->where(['<', 'date_ip', $old_time])->all();
         foreach($old as $str){
             $str->delete();
         }
-        session()->flash('status', 'Удалено '. count($old) . ' строк.');
-
+//        session()->flash('status', 'Удалено '. count($old) . ' строк.');
+        $session = Yii::$app->session;
+        $session->setFlash('success', 'Удалено '. count($old) . ' строк.');
     }
 
     /*
@@ -216,7 +237,8 @@ class KslStatistic extends ActiveRecord{
 //        $time_now = $date->subSecond()->format('Y-m-d H:i:s');
         $time_now = $date - 1; //текущее время и день минус 1 секунда
 
-        $res = $this->find()->where(['=','ip', $ip])
+        $res = $this->find()
+            ->where(['=','ip', $ip])
 //            ->whereBetween('date_ip', [$time, $time_now])
             ->andWhere(["between", "date_ip", $time , $time_now])
             ->limit(1)

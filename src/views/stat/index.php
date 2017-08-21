@@ -9,26 +9,18 @@
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
-    <link href="{{asset('ksl-stat/css/style_ip.css')}}" rel="stylesheet">
-
 </head>
 <body>
     <h3 class="stat_center">Статистика посещений по IP</h3>
     <div id="stat_ip">
 
+        <?php
+        use yii\helpers\Html;
+        use common\widgets\Alert;
+        ?>
 
-        <?php if (isset($status)) : ?>
-            <div class="alert alert-success">
-                <?php echo $status; ?>
-            </div>
-        <?php endif ?>
 
-        <?php if (isset($error)) : ?>
-            <div class="alert alert-danger">
-                <?php echo $error; ?>
-            </div>
-        <?php endif ?>
-
+        <?= Alert::widget() ?>
 
 
         <?php echo $this->render('table',[
@@ -37,58 +29,118 @@
         ]); ?>
 
 
+        <?= Html::beginForm(['forms'], 'post', ['class'=>'form-horizontal']) ?>
+
+        <input name="reset" type="hidden" value="1">
+        <button class="button-reset" type="submit">Сбросить фильтры</button>
+
+        <?= Html::endForm() ?>
+
+<!--		{!! Form::open(['url'=>route('forms'), 'class'=>'form-horizontal','method' => 'POST']) !!}-->
+<!--		{{ Form::hidden('reset', true)}}-->
+<!--		{!! Form::button('Сбросить фильтры',['class'=>'button-reset','type'=>'submit']) !!}-->
+<!--		{!! Form::close() !!}-->
 
 
-		{!! Form::open(['url'=>route('forms'), 'class'=>'form-horizontal','method' => 'POST']) !!}
-		{{ Form::hidden('reset', true)}}
-		{!! Form::button('Сбросить фильтры',['class'=>'button-reset','type'=>'submit']) !!}
-		{!! Form::close() !!}
 		<hr>
 
 
 
 		<h3>Сформировать за указанную дату</h3>
-		{!! Form::open(['url'=>route('forms'), 'class'=>'form-horizontal','method' => 'POST']) !!}
-		{!! Form::text('date_ip', '',['class'=>'date_ip']) !!}
+<!--		{!! Form::open(['url'=>route('forms'), 'class'=>'form-horizontal','method' => 'POST']) !!}-->
+<!--		{!! Form::text('date_ip', '',['class'=>'date_ip']) !!}-->
+<!---->
+<!--		{!! Form::button('Отфильтровать',['class'=>'button-reset','type'=>'submit']) !!}-->
+<!--		{!! Form::close() !!}-->
 
-		{!! Form::button('Отфильтровать',['class'=>'button-reset','type'=>'submit']) !!}
-		{!! Form::close() !!}
+
+        <?= Html::beginForm(['forms'], 'post', ['class'=>'form-horizontal']) ?>
+
+        <input name="reset" type="hidden" value="1">
+        <input name="date_ip" type="text" class="date_ip">
+        <button class="button-reset" type="submit">Отфильтровать</button>
+
+        <?= Html::endForm() ?>
+
+
+
+
 	    <hr>
 
 
 
 
 		<h3>Сформировать за выбранный период </h3>
-		{!! Form::open(['url'=>route('forms'), 'class'=>'form-horizontal','method' => 'POST']) !!}
+<!--		{!! Form::open(['url'=>route('forms'), 'class'=>'form-horizontal','method' => 'POST']) !!}-->
+<!---->
+<!--		<div class="form-group">-->
+<!--            {{ Form::label('Начало', null, ['class' => 'control-label']) }}-->
+<!--            {!! Form::text('start_time', '',['class'=>'date_ip']) !!}-->
+<!--		</div>-->
+<!---->
+<!--        <div class="form-group">-->
+<!--            {{ Form::label('Конец', null, ['class' => 'control-label']) }}-->
+<!--            {!! Form::text('stop_time', '',['class'=>'date_ip']) !!}-->
+<!--        </div>-->
+<!---->
+<!--        {{ Form::hidden('period', true)}}-->
+<!--		{!! Form::button('Отфильтровать',['class'=>'button-reset','type'=>'submit']) !!}-->
+<!--		{!! Form::close() !!}-->
 
-		<div class="form-group">
-            {{ Form::label('Начало', null, ['class' => 'control-label']) }}
-            {!! Form::text('start_time', '',['class'=>'date_ip']) !!}
-		</div>
+
+
+        <?= Html::beginForm(['forms'], 'post', ['class'=>'form-horizontal']) ?>
 
         <div class="form-group">
-            {{ Form::label('Конец', null, ['class' => 'control-label']) }}
-            {!! Form::text('stop_time', '',['class'=>'date_ip']) !!}
+            <label for="Начало" class="control-label">Начало</label>
+            <input class="date_ip" name="start_time" type="text" value="">
         </div>
 
-        {{ Form::hidden('period', true)}}
-		{!! Form::button('Отфильтровать',['class'=>'button-reset','type'=>'submit']) !!}
-		{!! Form::close() !!}
+        <div class="form-group">
+            <label for="Конец" class="control-label">Конец</label>
+            <input class="date_ip" name="stop_time" type="text" value="">
+        </div>
+
+        <input name="period" type="hidden" value="1">
+        <button class="button-reset" type="submit">Отфильтровать</button>
+
+        <?= Html::endForm() ?>
+
+
+
+
 		<hr>
 
 
 
         <h3>Сформировать по определенному IP</h3>
-        {!! Form::open(['url'=>route('forms'), 'class'=>'form-horizontal','method' => 'POST']) !!}
+<!--        {!! Form::open(['url'=>route('forms'), 'class'=>'form-horizontal','method' => 'POST']) !!}-->
+<!---->
+<!--        <div class="form-group">-->
+<!--            {{ Form::label('IP', null, ['class' => 'control-label']) }}-->
+<!--            {!! Form::text('ip', null, ['placeholder' => '127.0.0.1']) !!}-->
+<!--        </div>-->
+<!---->
+<!--        {{ Form::hidden('search_ip', true)}}-->
+<!--        {!! Form::button('Отфильтровать',['class'=>'button-reset','type'=>'submit']) !!}-->
+<!--        {!! Form::close() !!}-->
+
+
+        <?= Html::beginForm(['forms'], 'post', ['class'=>'form-horizontal']) ?>
 
         <div class="form-group">
-            {{ Form::label('IP', null, ['class' => 'control-label']) }}
-            {!! Form::text('ip', null, ['placeholder' => '127.0.0.1']) !!}
+            <label for="ip" class="control-label">IP</label>
+            <input name="ip" type="text" placeholder="127.0.0.1">
         </div>
 
-        {{ Form::hidden('search_ip', true)}}
-        {!! Form::button('Отфильтровать',['class'=>'button-reset','type'=>'submit']) !!}
-        {!! Form::close() !!}
+        <input name="search_ip" type="hidden" value="1">
+        <button class="button-reset" type="submit">Отфильтровать</button>
+
+        <?= Html::endForm() ?>
+
+
+
+
         <hr>
 
 
@@ -101,17 +153,34 @@
             <tr class='tr_small'>
 
             <h4>Сейчас в черном списке:</h4>
-            @foreach($black_list as $key=>$value)
-                <td> {{$value['ip']}}
-                @if(!empty($value['comment']))
-                    - {{$value['comment']}}
-                @endif
-                </td>
-            @endforeach
+<!--            @foreach($black_list as $key=>$value)-->
+<!--                <td> {{$value['ip']}}-->
+<!--                @if(!empty($value['comment']))-->
+<!--                    - {{$value['comment']}}-->
+<!--                @endif-->
+<!--                </td>-->
+<!--            @endforeach-->
+<!---->
+<!--            @if(count($black_list)==0)-->
+<!--                <td>Черный список пуст.</td>-->
+<!--            @endif-->
 
-            @if(count($black_list)==0)
+                <?php foreach($black_list as $key=>$value) : ?>
+                <td>
+                    <?php echo $value['ip'] ?>
+                    <?php if(!empty($value['comment'])) : ?>
+                    - <?php echo $value['comment'] ?>
+                    <?php endif ?>
+                </td>
+
+                <?php endforeach ?>
+
+
+                <?php if(count($black_list)==0) : ?>
                 <td>Черный список пуст.</td>
-            @endif
+                <?php endif ?>
+
+
 
             </tr>
         </table>
@@ -120,44 +189,84 @@
 
 
 
-        {!! Form::open(['url'=>route('forms'), 'class'=>'form-horizontal','method' => 'POST']) !!}
-        <div class="form-group">
-            {{ Form::label('IP', null, ['class' => 'control-label']) }}
-            {!! Form::text('ip', null, ['placeholder' => '127.0.0.1']) !!}
-        </div>
-        <div class="form-group">
-            {{ Form::label('Комментарий', null, ['class' => 'control-label']) }}
-            {!! Form::text('comment') !!}
-        </div>
+<!--        {!! Form::open(['url'=>route('forms'), 'class'=>'form-horizontal','method' => 'POST']) !!}-->
+<!--        <div class="form-group">-->
+<!--            {{ Form::label('IP', null, ['class' => 'control-label']) }}-->
+<!--            {!! Form::text('ip', null, ['placeholder' => '127.0.0.1']) !!}-->
+<!--        </div>-->
+<!--        <div class="form-group">-->
+<!--            {{ Form::label('Комментарий', null, ['class' => 'control-label']) }}-->
+<!--            {!! Form::text('comment') !!}-->
+<!--        </div>-->
+<!---->
+<!--        {{ Form::hidden('add_black_list', true)}}-->
+<!--        {!! Form::button('Добавить в черный список',['type'=>'submit']) !!}-->
+<!--        {!! Form::close() !!}-->
+<!--        <br>-->
 
-        {{ Form::hidden('add_black_list', true)}}
-        {!! Form::button('Добавить в черный список',['type'=>'submit']) !!}
-        {!! Form::close() !!}
+
+        <?= Html::beginForm(['forms'], 'post', ['class'=>'form-horizontal']) ?>
+            <div class="form-group">
+                <label for="IP" class="control-label">IP</label>
+                <input placeholder="127.0.0.1" name="ip" type="text">
+            </div>
+            <div class="form-group">
+                <label for="Комментарий" class="control-label">Комментарий</label>
+                <input name="comment" type="text">
+            </div>
+
+            <input name="add_black_list" type="hidden" value="1">
+            <button type="submit">Добавить в черный список</button>
+        <?= Html::endForm() ?>
+
         <br>
 
 
 
 
-        {!! Form::open(['url'=>route('forms'), 'class'=>'form-horizontal','method' => 'POST']) !!}
-        <div class="form-group">
-            {{ Form::label('IP', null, ['class' => 'control-label']) }}
-            {!! Form::text('ip', null, ['placeholder' => '127.0.0.1']) !!}
-        </div>
+        <?= Html::beginForm(['forms'], 'post', ['class'=>'form-horizontal']) ?>
+            <div class="form-group">
+                <label for="IP" class="control-label">IP</label>
+                <input placeholder="127.0.0.1" name="ip" type="text">
+            </div>
 
-        {{ Form::hidden('del_black_list', true)}}
-        {!! Form::button('Удалить из черного списка',['type'=>'submit']) !!}
-        {!! Form::close() !!}
+            <input name="del_black_list" type="hidden" value="1">
+            <button type="submit">Удалить из черного списка</button>
+        <?= Html::endForm() ?>
+
+
+
+<!--        {!! Form::open(['url'=>route('forms'), 'class'=>'form-horizontal','method' => 'POST']) !!}-->
+<!--        <div class="form-group">-->
+<!--            {{ Form::label('IP', null, ['class' => 'control-label']) }}-->
+<!--            {!! Form::text('ip', null, ['placeholder' => '127.0.0.1']) !!}-->
+<!--        </div>-->
+<!---->
+<!--        {{ Form::hidden('del_black_list', true)}}-->
+<!--        {!! Form::button('Удалить из черного списка',['type'=>'submit']) !!}-->
+<!--        {!! Form::close() !!}-->
         <hr>
+
+
+
 
 
 
 
         <h3>Очистка базы данных <span class="font_min">(старше 90 дней)</span></h3>
 
-        {!! Form::open(['url'=>route('forms'), 'class'=>'form-horizontal','method' => 'POST']) !!}
-        {{ Form::hidden('del_old', true)}}
-        {!! Form::button('Удалить старые данные',['type'=>'submit']) !!}
-        {!! Form::close() !!}
+<!--        {!! Form::open(['url'=>route('forms'), 'class'=>'form-horizontal','method' => 'POST']) !!}-->
+<!--        {{ Form::hidden('del_old', true)}}-->
+<!--        {!! Form::button('Удалить старые данные',['type'=>'submit']) !!}-->
+<!--        {!! Form::close() !!}-->
+
+        <?= Html::beginForm(['forms'], 'post', ['class'=>'form-horizontal']) ?>
+
+        <input name="del_old" type="hidden" value="1">
+        <button class="button-reset" type="submit">Удалить старые данные</button>
+
+        <?= Html::endForm() ?>
+
         <br>
 
 
