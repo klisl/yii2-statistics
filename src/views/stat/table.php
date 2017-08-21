@@ -37,6 +37,8 @@
     </thead>
     <tbody>
 
+    <?php //dd($count_ip); ?>
+
 	<?php foreach ($count_ip as $key => $value){
 
 
@@ -69,7 +71,7 @@
 
 
             $transition = 1;
-
+//dd($value);
             /*
              * тут проверка был ли такой IP в течении текущих суток (0-24)
              * Если да, то не добавляем в общий счетчик посетителей за день
@@ -77,7 +79,7 @@
             $find = $value->find_ip_by_day($value->ip, $value->date_ip);
 //dd(count($find));
             //Если такого IP еще не было в этот день
-            if(count($find)){
+            if(!count($find)){
                 $count++;
                 if (!$stat_ip) $count_day++; //для фильтра по определенному IP
                 $old = 0;

@@ -85,7 +85,8 @@ class KslStatistic extends ActiveRecord{
                 ->all();
 
         } else {
-
+//dump(time());
+//dd($days_ago);
             $count_ip = $this
                 ->find()
 //                ->where('black_list_ip', '<', 1)
@@ -232,18 +233,21 @@ class KslStatistic extends ActiveRecord{
     public function find_ip_by_day($ip, $date){
 
 //        $time = $date->format('Y-m-d 00:00:00');
-        $time = date("Y-m-d 00:00:00",$date); //0:00 полученного дня
+//        $time = date("Y-m-d 00:00:00",$date); //0:00 полученного дня
+        $time_day = $date%(3600*24)+date("Z");
+        $time = $date - $time_day;
+//        dd(date("Y-m-d H:i:s",$time));
 
 //        $time_now = $date->subSecond()->format('Y-m-d H:i:s');
         $time_now = $date - 1; //текущее время и день минус 1 секунда
-
+//dd();
         $res = $this->find()
             ->where(['=','ip', $ip])
 //            ->whereBetween('date_ip', [$time, $time_now])
             ->andWhere(["between", "date_ip", $time , $time_now])
             ->limit(1)
             ->all();
-
+//dump($res);
         return $res;
     }
 
@@ -258,29 +262,38 @@ class KslStatistic extends ActiveRecord{
 //        if(!$count_ip->isEmpty()){
         if(!empty($count_ip)){
 //dd();
-
+        /*
+         * Если дата у следующего элемента отличается, то
+         *
+         */
 
             $array = [];
             $count = 0;
 //            $first_day = $count_ip->first()->date_ip->format('Y-m-d');
             $first_day = date("Y-m-d",$count_ip[0]->date_ip);
-
+//            dd($count_ip);
             foreach ($count_ip as $item) {
 //                $one_day = $item->date_ip->format('Y-m-d');
                 $one_day = date("Y-m-d",$item->date_ip);
-
+//                dump($first_day);
+//                dump($one_day);
                 if ($first_day != $one_day) {
                     $count++;
                     $first_day = $one_day;
-                    $array[$count] = $item;
+                    $array[$count][] = $item;
                 } else {
-                    $array[$count] = $item;
+                    $array[$count][] = $item;
                 }
             };
-//            dd($array);
 
-//            return collect($array)->reverse()->collapse();
-            return $array;
+
+            //складываем массивы
+            $new_array = [];
+            foreach ($array as $i) {
+                $new_array = array_merge($i,$new_array);
+            }
+
+            return $new_array;
         }
         return $count_ip;
     }
