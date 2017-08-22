@@ -18,7 +18,7 @@ class m170306_083010_statistics extends Migration
 		$this->createTable('{{%ksl_ip_count}}', [
 			'id' => $this->primaryKey(),
 			'ip' => $this->string(15)->notNull(),
-			'str_url' => $this->string(50),
+			'str_url' => $this->string(255),
 			'date_ip' => $this->integer(),
 			'black_list_ip' => $this->boolean()->defaultValue(0)->notNull(),
 			'comment' => $this->string(50),

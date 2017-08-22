@@ -10,13 +10,13 @@
 </head>
 <body id="statistics-enter">
 
-    <?php use yii\helpers\Html; ?>
+<?php
+use yii\helpers\Html;
+use Klisl\Statistics\AlertWidget;
+?>
 
-    <?php if (isset($error)) : ?>
-        <div class="alert alert-danger">
-            <?php echo $error; ?>
-        </div>
-    <?php endif ?>
+
+<?= AlertWidget::widget() ?>
 
 
 

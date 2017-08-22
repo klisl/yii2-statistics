@@ -16,12 +16,11 @@
 
         <?php
         use yii\helpers\Html;
-        use common\widgets\Alert;
+        use Klisl\Statistics\AlertWidget;
         ?>
 
 
-        <?= Alert::widget() ?>
-
+        <?= AlertWidget::widget() ?>
 
         <?php echo $this->render('table',[
             'count_ip'=> $count_ip,

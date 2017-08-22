@@ -72,7 +72,7 @@ class KslStatistic extends ActiveRecord{
         $sec_todey = time() - strtotime('today'); //сколько секунд прошло с начала дня
 
         //за сколько дней показывать по-умолчанию
-        $days_show_stat = Yii::$app->params['statistics']['days_default'] - 1 ;
+        $days_show_stat = KslStatistic::getParameters()['days_default'] - 1 ;
 
         $days_ago = time() - (86400 * $days_show_stat) - $sec_todey;
 
