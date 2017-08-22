@@ -35,7 +35,7 @@ yii migrate --migrationPath=@Klisl/Statistics/migrations --interactive=0
 ```
 
 * Если нужно – переопределить настройки пакета в файле common/config/params.php:
-```
+```php
 <?php
 return [
 
@@ -63,7 +63,7 @@ return [
 -------------
 
 * Разместить (переопределить метод behaviors) в контроллерах ответственных за вывод страниц по которым нужно собирать статистику:
-```
+```php
 public function behaviors()
 {
     return [
@@ -78,7 +78,7 @@ public function behaviors()
 где в качестве значений массива с ключем 'actions' указать нужные действия контроллера.
 
 В качестве альтернативы можно (не переопределяя метод behaviors) указать в каждом необходимом действии такой код:
-```
+```php
 $this->attachBehavior('statistics', [
     'class' => \Klisl\Statistics\AddStatistics::class,
     'actions' => [$this->action->id]
