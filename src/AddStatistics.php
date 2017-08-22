@@ -21,7 +21,7 @@ class AddStatistics extends Behavior
     public function events()
     {
         return [
-            Controller::EVENT_BEFORE_ACTION  => 'add',
+            Controller::EVENT_AFTER_ACTION  => 'add',
         ];
     }
 
@@ -32,7 +32,7 @@ class AddStatistics extends Behavior
         if(array_search($action_name, $this->actions)=== FALSE) return;
 
         $ip = Yii::$app->request->userIP; //получаем IP текущего посетителя
-        if($ip == '127.0.0.1') return;
+//        if($ip == '127.0.0.1') return;
 
         $count_model = new KslStatistic(); //модель
 

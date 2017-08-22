@@ -10,10 +10,9 @@
 
     //Получение первой даты по которой отображать статистику
     if (isset($count_ip[0])){
-//        $date = $count_ip[0]->date_ip->format('d.m.Y');
 
         $date = date("d.m.Y",$count_ip[0]->date_ip);
-//        dd($date);
+
     } else $date = date("d.m.Y",time()); //Если дата не установлена, то выводим за сегодняшний день
 ?>
 
@@ -37,16 +36,13 @@
     </thead>
     <tbody>
 
-    <?php //dd($count_ip); ?>
 
 	<?php foreach ($count_ip as $key => $value){
 
 
         //кол-во посетителей по дням (вывод последнего дня после цикла)
-//        if($date != $value->date_ip->format('d.m.Y')) {
         if($date != date("d.m.Y",$value->date_ip)) {
             echo $date . ' - '. $count_day . '<br>';
-//            $date = $value->date_ip->format('d.m.Y');
             $date = date("d.m.Y",$value->date_ip);
             $count_day = 0;
         }
@@ -55,15 +51,12 @@
 
 
         //Если сменился IP или дата, то включаем счетчики
-//        if (($num_ip != $value->ip) || ($now_date !=$value->date_ip->format('Y-m-d'))){
         if (($num_ip != $value->ip) || ($now_date !=date("Y-m-d",$value->date_ip))){
 
             $num_ip = $value->ip; //сохраняем текущий IP
 
-//            if($now_date !=$value->date_ip->format('Y-m-d')){
             if($now_date !=date("Y-m-d",$value->date_ip)){
 
-//                $now_date = $value->date_ip->format('Y-m-d');
                 $now_date = date("Y-m-d",$value->date_ip); //сохраняем текущую дату
 
                 $show_new_date = true;
@@ -71,13 +64,13 @@
 
 
             $transition = 1;
-//dd($value);
+
             /*
              * тут проверка был ли такой IP в течении текущих суток (0-24)
              * Если да, то не добавляем в общий счетчик посетителей за день
              */
             $find = $value->find_ip_by_day($value->ip, $value->date_ip);
-//dd(count($find));
+
             //Если такого IP еще не было в этот день
             if(!count($find)){
                 $count++;
@@ -99,13 +92,10 @@
 
             $date_new = date("d.m.Y",$value->date_ip);
             if ($show_new_date && !$old) {
-//                echo "class='tr_first red'><td colspan='4'>{$value->date_ip->format('d.m.Y')}</td></tr>";
                 echo "class='tr_first red'><td colspan='4'>$date_new</td></tr>";
-                echo "<tr class='tr_first'><td colspan='4'>НОВЫЙ ПОСЕТИТЕЛЬ</td></tr>";
-
+                if(!$stat_ip) echo "<tr class='tr_first'><td colspan='4'>НОВЫЙ ПОСЕТИТЕЛЬ</td></tr>";
             }
             else if ($show_new_date && $old) {
-//                echo "class='tr_first red'><td colspan='4'>{$value->date_ip->format('d.m.Y')}</td></tr>";
                 echo "class='tr_first red'><td colspan='4'>$date_new</td></tr>";
                 echo "<tr class='tr_first'><td colspan='4'>уже был</td></tr>";
             }
@@ -130,7 +120,6 @@
 
         //вывод кол-ва посетителей за последнее число
         if(isset($value)){
-//            $date = $value->date_ip->format('d.m.Y');
             $date = date("d.m.Y",$value->date_ip);
             if($date) echo $date . ' - '. $count_day . '<br>';
         }

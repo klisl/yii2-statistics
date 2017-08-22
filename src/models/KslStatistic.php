@@ -7,10 +7,6 @@ use yii\db\ActiveRecord;
 
 class KslStatistic extends ActiveRecord{
 
-//    protected $table = 'kslStatistics';
-
-//    protected $guarded = [];
-
     public $start_time;
     public $stop_time;
     public $add_black_list;
@@ -23,6 +19,28 @@ class KslStatistic extends ActiveRecord{
     {
         return '{{%ksl_ip_count}}';
     }
+
+
+    public static function getParameters(){
+        return [
+
+            //кол-во дней для вывода статистики по-умолчанию (сегодня/вчера/...)
+            'days_default' => isset(Yii::$app->params['statistics']['days_default']) ? Yii::$app->params['statistics']['days_default'] : 3,
+
+            //пароль для входа на страницу статистики. Если false (без кавычек) - вход без пароля
+            'password' => isset(Yii::$app->params['statistics']['password']) ? Yii::$app->params['statistics']['password'] : 'klisl',
+
+            //если true, то статистика доступна только аутентифицированным пользователям
+            'authentication' => isset(Yii::$app->params['statistics']['authentication']) ? Yii::$app->params['statistics']['authentication'] :  false,
+
+            //контроллер/действие для страницы аутентификации (по-умолчанию 'site/login')
+            'auth_route' => isset(Yii::$app->params['statistics']['auth_route']) ? Yii::$app->params['statistics']['auth_route'] : null,
+
+            //удалять данные через х дней
+            'date_old' => isset(Yii::$app->params['statistics']['date_old']) ? Yii::$app->params['statistics']['date_old'] : 90,
+        ];
+    }
+
 
 
     //проверка наличия IP в черном списке (которые не надо выводить и сохранять в БД)
@@ -54,28 +72,22 @@ class KslStatistic extends ActiveRecord{
         $sec_todey = time() - strtotime('today'); //сколько секунд прошло с начала дня
 
         //за сколько дней показывать по-умолчанию
-//        $days_show_stat = config('statistics.days_default') -1 ;
         $days_show_stat = Yii::$app->params['statistics']['days_default'] - 1 ;
-//        dd($days_show_stat);
 
         $days_ago = time() - (86400 * $days_show_stat) - $sec_todey;
-        //В формат 2017-08-05 00:00:00 как в БД
-//        $days_ago = date("Y-m-d H:i:s",$date_unix);
 
-//        dd($days_ago);
         //Выбор диапазона между двумя датами
         if(in_array( 'date_ip',$condition)) {
-//            dd($condition);
+
             $count_ip = $this
                 ->find()
                 ->where(['<', 'black_list_ip', 1])
-//                ->whereBetween($condition[0], [date("Y-m-d H:i:s",$condition[1]), date("Y-m-d H:i:s",$condition[2])])
                 ->andWhere(["between", $condition[0], $condition[1] , $condition[2]])
                 ->orderBy('date_ip')
                 ->all();
 
         } elseif($condition){
-//dd($condition);
+
             $count_ip = $this
                 ->find()
                 ->where(['<', 'black_list_ip', 1])
@@ -85,54 +97,18 @@ class KslStatistic extends ActiveRecord{
                 ->all();
 
         } else {
-//dump(time());
-//dd($days_ago);
+
             $count_ip = $this
                 ->find()
-//                ->where('black_list_ip', '<', 1)
                 ->where(['<','black_list_ip', 1])
-//                ->andWhere('created_at', '>', $days_ago)
                 ->andWhere(['>', 'date_ip', $days_ago])
                 ->orderBy('date_ip')
                 ->all();
-
         }
-//        dd($count_ip);
+
         return $count_ip;
     }
 
-    //выборка номеров IP которые в черном списке
-//    public function count_black_list(){
-//
-//            $black_list = $this
-//            ->find()
-//            ->select('ip')
-//            ->where(['=', 'black_list_ip', 1])
-//            ->distinct() //уникальные значения
-//            ->all();
-//
-//        //По полученному массиву IP получаем значение ячейки "comment"
-//        foreach ($black_list as $key => $arr){
-//            $rez = $arr->find()->where(['ip' => $arr['ip']])->limit(1)->all();
-//
-//            dd($rez);
-//            $comment = $rez[$key]
-//                ->find()
-//                ->select('comment')
-//                ->limit(1)
-//                ->all();
-//
-////            dd($t->comment);
-//
-//
-////            $black_list[$key]['comment'] = $rez->comment;
-//            $black_list[$key]['comment'] = $comment[0]->comment;
-//
-//            dd($black_list);
-//        }
-////        dd($black_list);
-//        return $black_list;
-//    }
 
 
     public function count_black_list(){
@@ -155,13 +131,12 @@ class KslStatistic extends ActiveRecord{
 
     //Добавить в черн список
     public function set_black_list($ip, $comment=''){
-//        dd($comment);
+
         $verify_black_list = $this->find()->where(['=', 'ip', $ip])->all();
-//        dd($verify_black_list);
+
         //Если такой IP уже есть (коллекция не пуста)
         if(!empty($verify_black_list)){
             foreach ($verify_black_list as $str){
-//                dd($str);
                 $str->black_list_ip = 1;
                 $str->comment = $comment;
                 $res = $str->save();
@@ -209,21 +184,23 @@ class KslStatistic extends ActiveRecord{
 
 
 
-    //Удаление данных старше 90 дней
+    //Удаление старых данных
     public function remove_old(){
 
         $today = time();
-        $time = $today - (86400*90);
-        //Формат
-        $old_time = date("Y-m-d H:i:s",$time);
+        $date_old = KslStatistic::getParameters()['date_old']; //за сколько дней удалять данные из БД
 
-        $old = $this->find()->where(['<', 'date_ip', $old_time])->all();
+        $time = $today - (86400 * $date_old);
+
+        $old = $this->find()->where(['<', 'date_ip', $time])->all();
         foreach($old as $str){
             $str->delete();
         }
-//        session()->flash('status', 'Удалено '. count($old) . ' строк.');
+
         $session = Yii::$app->session;
-        $session->setFlash('success', 'Удалено '. count($old) . ' строк.');
+        if(count($old)) $session->setFlash('success', 'Удалено '. count($old) . ' строк.');
+        else $session->setFlash('success', 'Нет старых данных для удаления.');
+
     }
 
     /*
@@ -232,22 +209,17 @@ class KslStatistic extends ActiveRecord{
      */
     public function find_ip_by_day($ip, $date){
 
-//        $time = $date->format('Y-m-d 00:00:00');
-//        $time = date("Y-m-d 00:00:00",$date); //0:00 полученного дня
         $time_day = $date%(3600*24)+date("Z");
         $time = $date - $time_day;
-//        dd(date("Y-m-d H:i:s",$time));
 
-//        $time_now = $date->subSecond()->format('Y-m-d H:i:s');
         $time_now = $date - 1; //текущее время и день минус 1 секунда
-//dd();
+
         $res = $this->find()
             ->where(['=','ip', $ip])
-//            ->whereBetween('date_ip', [$time, $time_now])
             ->andWhere(["between", "date_ip", $time , $time_now])
             ->limit(1)
             ->all();
-//dump($res);
+
         return $res;
     }
 
@@ -259,24 +231,22 @@ class KslStatistic extends ActiveRecord{
     */
     public function reverse($count_ip){
 
-//        if(!$count_ip->isEmpty()){
+
         if(!empty($count_ip)){
-//dd();
+
         /*
          * Если дата у следующего элемента отличается, то
          *
          */
-
             $array = [];
             $count = 0;
-//            $first_day = $count_ip->first()->date_ip->format('Y-m-d');
+
             $first_day = date("Y-m-d",$count_ip[0]->date_ip);
-//            dd($count_ip);
+
             foreach ($count_ip as $item) {
-//                $one_day = $item->date_ip->format('Y-m-d');
+
                 $one_day = date("Y-m-d",$item->date_ip);
-//                dump($first_day);
-//                dump($one_day);
+
                 if ($first_day != $one_day) {
                     $count++;
                     $first_day = $one_day;
@@ -286,8 +256,7 @@ class KslStatistic extends ActiveRecord{
                 }
             };
 
-
-            //складываем массивы
+            //соединяем массивы
             $new_array = [];
             foreach ($array as $i) {
                 $new_array = array_merge($i,$new_array);
