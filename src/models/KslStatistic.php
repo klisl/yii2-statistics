@@ -209,11 +209,12 @@ class KslStatistic extends ActiveRecord{
      */
     public function find_ip_by_day($ip, $date){
 
-        $time_day = $date%(3600*24)+date("Z");
-        $time = $date - $time_day;
+		//метка времени на начало указанного дня
+		$time = strtotime(date("d.m.Y",$date)); 
 
         $time_now = $date - 1; //текущее время и день минус 1 секунда
 
+		
         $res = $this->find()
             ->where(['=','ip', $ip])
             ->andWhere(["between", "date_ip", $time , $time_now])
