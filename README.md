@@ -34,7 +34,7 @@ composer require klisl/yii2-statistics
 yii migrate --migrationPath=@Klisl/Statistics/migrations --interactive=0
 ```
 
-* Если нужно – переопределить настройки пакета в файле common/config/params.php:
+* Если необходимо – переопределить настройки пакета в файле common/config/params.php (advanced) или config/params.php (basic):
 ```php
 <?php
 return [
@@ -55,6 +55,7 @@ return [
 
 ```
 для этого вставить массив 'statistics' с нужными вложенными элементами.
+Для включения опции "authentication" должна быть реализована аутентификация пользователей.
 
 
 
@@ -86,8 +87,11 @@ $this->attachBehavior('statistics', [
 
 ```
 
-* Для перехода на страницу статистики наберите:
-**ВАШ САЙТ/statistics**
+* Для перехода на страницу статистики
+ - с включенным ЧПУ в настройках Вашего приложения:
+**http://ВАШ_САЙТ.COM/statistics**
+- без ЧПУ:
+**http://ВАШ_САЙТ.COM/web/index.php?r=statistics/stat/index**
 
 Откроется форма для входа на страницу с вводом пароля или страница аутентификации (в зависимости от настроек).
 После ввода правильных данных, откроется сама страница статистики с формами для фильтрации.

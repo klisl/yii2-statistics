@@ -1,43 +1,43 @@
 <?php
 
-    $now_date = ''; //текущая дата которая выводится в таблице
-    $show_new_date = false; //показать смену даты в таблице
-    $transition = 1; //счетчик переходов на страницы
-    $count = 0; //общий счетчик посетителей за период
-    $count_day = 0; //счетчик посетителей за 1 день
-    $num_ip = ''; //хранение текущего IP
-    $old = 0; //кол-во найденных строк с IP за данный день
+$now_date = ''; //текущая дата которая выводится в таблице
+$show_new_date = false; //показать смену даты в таблице
+$transition = 1; //счетчик переходов на страницы
+$count = 0; //общий счетчик посетителей за период
+$count_day = 0; //счетчик посетителей за 1 день
+$num_ip = ''; //хранение текущего IP
+$old = 0; //кол-во найденных строк с IP за данный день
 
-    //Получение первой даты по которой отображать статистику
-    if (isset($count_ip[0])){
+//Получение первой даты по которой отображать статистику
+if (isset($count_ip[0])){
 
-        $date = date("d.m.Y",$count_ip[0]->date_ip);
+    $date = date("d.m.Y",$count_ip[0]->date_ip);
 
-    } else $date = date("d.m.Y",time()); //Если дата не установлена, то выводим за сегодняшний день
+} else $date = date("d.m.Y",time()); //Если дата не установлена, то выводим за сегодняшний день
 ?>
 
-    <?php if (!$stat_ip) { ?>
-        <h5>Количество уникальных посетителей по дням:</h5>
-    <?php } else { ?>
-        <h5>Количество посещений пользователя с указанным IP:</h5>
-    <?php } ?>
+<?php if (!$stat_ip) { ?>
+    <h5>Количество уникальных посетителей по дням:</h5>
+<?php } else { ?>
+    <h5>Количество посещений пользователя с указанным IP:</h5>
+<?php } ?>
 
 
 
 
 <table class='get_table'>
     <thead>
-     <tr>
+    <tr>
         <th>Переходы на страницы сайта</th>
         <th>IP</th>
-        <th>URL просматриваемой страницы</th>
+        <th colspan="2">URL просматриваемой страницы</th>
         <th>Время посещения</th>
     </tr>
     </thead>
     <tbody>
 
 
-	<?php foreach ($count_ip as $key => $value){
+    <?php foreach ($count_ip as $key => $value){
 
 
         //кол-во посетителей по дням (вывод последнего дня после цикла)
@@ -92,39 +92,39 @@
 
             $date_new = date("d.m.Y",$value->date_ip);
             if ($show_new_date && !$old) {
-                echo "class='tr_first red'><td colspan='4'>$date_new</td></tr>";
-                if(!$stat_ip) echo "<tr class='tr_first'><td colspan='4'>НОВЫЙ ПОСЕТИТЕЛЬ</td></tr>";
+                echo "class='tr_first red'><td colspan='5'>$date_new</td></tr>";
+                if(!$stat_ip) echo "<tr class='tr_first'><td colspan='5'>НОВЫЙ ПОСЕТИТЕЛЬ</td></tr>";
             }
             else if ($show_new_date && $old) {
-                echo "class='tr_first red'><td colspan='4'>$date_new</td></tr>";
-                echo "<tr class='tr_first'><td colspan='4'>уже был</td></tr>";
+                echo "class='tr_first red'><td colspan='5'>$date_new</td></tr>";
+                echo "<tr class='tr_first'><td colspan='5'>уже был</td></tr>";
             }
             elseif ($old) {
-                echo "class='tr_first'><td colspan='4'>уже был</td></tr>";
+                echo "class='tr_first'><td colspan='5'>уже был</td></tr>";
 
             } else {
-                echo "class='tr_first'><td colspan='4'>НОВЫЙ ПОСЕТИТЕЛЬ</td></tr>";
+                echo "class='tr_first'><td colspan='5'>НОВЫЙ ПОСЕТИТЕЛЬ</td></tr>";
             }
         }
 
         else {
-           echo ">";
+            echo ">";
         }
         echo "<td>$transition</td>
             <td><a href='http://speed-tester.info/ip_location.php?ip=".$value->ip."' target=\"_blank\">".$value->ip."</a></td>  	
-            <td><a href='".$value->str_url."' target=\"_blank\">".$value->str_url."</a></td>                     
+            <td colspan=\"2\"><a href='".$value->str_url."' target=\"_blank\">".$value->str_url."</a></td>                     
             <td>".date('d.m.Y H:i:s',$value->date_ip)."</td></tr>";
 
 
     }
 
-        //вывод кол-ва посетителей за последнее число
-        if(isset($value)){
-            $date = date("d.m.Y",$value->date_ip);
-            if($date) echo $date . ' - '. $count_day . '<br>';
-        }
-	?>
+    //вывод кол-ва посетителей за последнее число
+    if(isset($value)){
+        $date = date("d.m.Y",$value->date_ip);
+        if($date) echo $date . ' - '. $count_day . '<br>';
+    }
+    ?>
 
-        <p>Всего посетителей за период - <?=$count?></p>
+    <p>Всего посетителей за период - <?=$count?></p>
     </tbody>
 </table>
