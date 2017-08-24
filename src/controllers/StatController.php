@@ -147,7 +147,8 @@ class StatController extends Controller
             if(!empty($count_model['start_time'])){
                 $timeStartUnix = strtotime($count_model['start_time']);
             } else {
-                $timeStartUnix = 0;
+                $sec_todey = time() - strtotime('today'); //сколько секунд прошло с начала дня
+                $timeStartUnix = time() - $sec_todey;
             }
 
             //Если не передана дата конца - ставим текущую
