@@ -5,7 +5,7 @@ namespace Klisl\Statistics;
 use Yii;
 use yii\base\Behavior;
 use yii\web\Controller;
-use Klisl\Statistics\Models\KslStatistic;
+use Klisl\Statistics\models\KslStatistic;
 
 
 /*

@@ -1,11 +1,11 @@
+<?php
+    use yii\helpers\Html;
+    use Klisl\Statistics\AlertWidget;
+?>
 
 <h3 class="stat_center">Статистика посещений по IP</h3>
 <div id="stat_ip">
 
-    <?php
-    use yii\helpers\Html;
-    use Klisl\Statistics\AlertWidget;
-    ?>
 
 
     <?= AlertWidget::widget() ?>

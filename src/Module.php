@@ -12,6 +12,6 @@ use yii\base\Behavior;
 class Module extends BaseModule
 {
 
-    public $controllerNamespace = 'Klisl\Statistics\Controllers';
+    public $controllerNamespace = 'Klisl\Statistics\controllers';
 
 }

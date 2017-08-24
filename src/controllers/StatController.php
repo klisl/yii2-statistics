@@ -1,10 +1,10 @@
 <?php
 
-namespace Klisl\Statistics\Controllers;
+namespace Klisl\Statistics\controllers;
 
 use Yii;
 use yii\web\Controller;
-use Klisl\Statistics\Models\KslStatistic;
+use Klisl\Statistics\models\KslStatistic;
 
 
 
