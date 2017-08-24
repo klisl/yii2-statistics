@@ -16,13 +16,15 @@
     ]); ?>
 
 
-    <?= Html::beginForm(['forms'], 'post', ['class'=>'form-horizontal']) ?>
+    <div id="filters">
+        <?= Html::beginForm(['forms'], 'post', ['class'=>'form-horizontal']) ?>
 
-    <input name="reset" type="hidden" value="1">
-    <button class="button-reset" type="submit">Сбросить фильтры</button>
+        <input name="reset" type="hidden" value="1">
+        <button class="button-reset" type="submit">Сбросить фильтры</button>
 
-    <?= Html::endForm() ?>
-    <hr>
+        <?= Html::endForm() ?>
+        <hr>
+    </div>
 
 
 

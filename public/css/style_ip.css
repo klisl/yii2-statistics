@@ -75,3 +75,9 @@
     margin: 0 auto;
     text-align: center;
 }
+
+#enter{
+    max-width: 1170px;
+    margin: 0 auto;
+    padding: 10px;
+}

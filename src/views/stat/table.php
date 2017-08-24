@@ -126,5 +126,6 @@ if (isset($count_ip[0])){
     ?>
 
     <p>Всего посетителей за период - <?=$count?></p>
+    <p><a href='#filters'>перейти к фильтрам</a></p>
     </tbody>
 </table>
