@@ -36,13 +36,13 @@ if (isset($count_ip[0])){
     </thead>
     <tbody>
 
-
     <?php foreach ($count_ip as $key => $value){
 
 
         //кол-во посетителей по дням (вывод последнего дня после цикла)
         if($date != date("d.m.Y",$value->date_ip)) {
-            echo $date . ' - '. $count_day . '<br>';
+            echo $date . ' - '. $count_day;
+            echo "<a href=\"#$date\">&nbsp;&nbsp; перейти</a>" . '<br>';
             $date = date("d.m.Y",$value->date_ip);
             $count_day = 0;
         }
@@ -85,31 +85,28 @@ if (isset($count_ip[0])){
             $transition++;
         }
 
-        echo "<tr ";
-
 
         if ($transition == 1 ) {
 
             $date_new = date("d.m.Y",$value->date_ip);
             if ($show_new_date && !$old) {
-                echo "class='tr_first red'><td colspan='5'>$date_new</td></tr>";
+                echo "<tr style='position:absolute;margin-top:-50px;border: none' id=\"$date_new\"></tr>";
+                echo "<tr class='tr_first red'><td colspan='5'>$date_new</td></tr>";
                 if(!$stat_ip) echo "<tr class='tr_first'><td colspan='5'>НОВЫЙ ПОСЕТИТЕЛЬ</td></tr>";
             }
             else if ($show_new_date && $old) {
-                echo "class='tr_first red'><td colspan='5'>$date_new</td></tr>";
+                echo "<tr style='position:absolute;margin-top:-50px;border: none' id=\"$date_new\"></tr>";
+                echo "<tr class='tr_first red'><td colspan='5'>$date_new</td></tr>";
                 echo "<tr class='tr_first'><td colspan='5'>уже был</td></tr>";
             }
             elseif ($old) {
-                echo "class='tr_first'><td colspan='5'>уже был</td></tr>";
+                echo "<tr class='tr_first'><td colspan='5'>уже был</td></tr>";
 
             } else {
-                echo "class='tr_first'><td colspan='5'>НОВЫЙ ПОСЕТИТЕЛЬ</td></tr>";
+                echo "<tr class='tr_first'><td colspan='5'>НОВЫЙ ПОСЕТИТЕЛЬ</td></tr>";
             }
         }
 
-        else {
-            echo ">";
-        }
         echo "<td>$transition</td>
             <td><a href='http://speed-tester.info/ip_location.php?ip=".$value->ip."' target=\"_blank\">".$value->ip."</a></td>  	
             <td colspan=\"2\"><a href='".$value->str_url."' target=\"_blank\">".$value->str_url."</a></td>                     
@@ -121,7 +118,11 @@ if (isset($count_ip[0])){
     //вывод кол-ва посетителей за последнее число
     if(isset($value)){
         $date = date("d.m.Y",$value->date_ip);
-        if($date) echo $date . ' - '. $count_day . '<br>';
+
+        if($date){
+            echo $date . ' - '. $count_day;
+            echo "<a href=\"#$date\">&nbsp;&nbsp; перейти</a>" . '<br>';
+        }
     }
     ?>
 
