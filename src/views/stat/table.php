@@ -90,18 +90,17 @@ if (isset($count_ip[0])){
 
             $date_new = date("d.m.Y",$value->date_ip);
             if ($show_new_date && !$old) {
-                echo "<tr style='position:absolute;margin-top:-50px;border: none' id=\"$date_new\"></tr>";
+                echo "<tr id=\"$date_new\"></tr>";
                 echo "<tr class='tr_first red'><td colspan='5'>$date_new</td></tr>";
                 if(!$stat_ip) echo "<tr class='tr_first'><td colspan='5'>НОВЫЙ ПОСЕТИТЕЛЬ</td></tr>";
             }
             else if ($show_new_date && $old) {
-                echo "<tr style='position:absolute;margin-top:-50px;border: none' id=\"$date_new\"></tr>";
+                echo "<tr id=\"$date_new\"></tr>";
                 echo "<tr class='tr_first red'><td colspan='5'>$date_new</td></tr>";
                 echo "<tr class='tr_first'><td colspan='5'>уже был</td></tr>";
             }
             elseif ($old) {
                 echo "<tr class='tr_first'><td colspan='5'>уже был</td></tr>";
-
             } else {
                 echo "<tr class='tr_first'><td colspan='5'>НОВЫЙ ПОСЕТИТЕЛЬ</td></tr>";
             }

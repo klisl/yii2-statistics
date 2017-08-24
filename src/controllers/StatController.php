@@ -11,6 +11,7 @@ use Klisl\Statistics\Models\KslStatistic;
 class StatController extends Controller
 {
 
+    public $layout = 'main';
 
     public function actionIndex($condition = [], $days_ago = null, $stat_ip = false)
     {

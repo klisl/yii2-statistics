@@ -8,7 +8,7 @@
 .stat_center{
     text-align: center;
     color: blue;
-} 
+}
 #stat_ip .get_table{
     margin: 0 auto;
     margin-bottom: 5px;
@@ -17,15 +17,15 @@
     border-collapse: collapse;
     border: 3px solid green;
     width: 90%;
-}  
-#stat_ip .get_table th, #stat_ip .get_table tr, #stat_ip table td {   
+}
+#stat_ip .get_table th, #stat_ip .get_table tr, #stat_ip table td {
     border: 1px dashed green;
     /*padding: 3px;*/
     width: 20%;
     text-align: center;
 }
 #stat_ip .get_table th {
-    border: 1px solid green; 
+    border: 1px solid green;
 }
 
 #stat_ip .font_min{
@@ -34,15 +34,15 @@
 #stat_ip h3{
     padding-top: 20px;
 }
-#stat_ip .get_table tr{ 
-    /*color: red;*/ 
+#stat_ip .get_table tr{
+    /*color: red;*/
 }
 .red {
     color: red;
 }
 #stat_ip .tr_small{
     display: inline-block;
-    
+
 }
 #stat_ip .tr_small td{
     padding: 5px;
@@ -52,8 +52,8 @@
     line-height: 40px;
     font-weight: bold;
     /*font-size: 1.1em;*/
-    border-top: 2px solid green; 
-    border-bottom: 1px solid green; 
+    border-top: 2px solid green;
+    border-bottom: 1px solid green;
 }
 
 #stat_ip .form-group{
@@ -71,12 +71,6 @@
     margin: 0 20px;
 }
 
-#statistics-enter{
-    max-width: 1170px;
-    margin: 0 auto;
-    padding: 10px;
-
-}
 .hentry{
     margin: 0 auto;
     text-align: center;
