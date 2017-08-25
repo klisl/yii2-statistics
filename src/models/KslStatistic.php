@@ -20,6 +20,16 @@ class KslStatistic extends ActiveRecord{
         return '{{%ksl_ip_count}}';
     }
 
+    public function rules()
+    {
+        return [
+            [['ip'], 'ip'],
+            [['str_url'], 'url'],
+            [['date_ip'], 'safe'],
+            [['black_list_ip'], 'boolean'],
+        ];
+    }
+
 
     public static function getParameters(){
         return [

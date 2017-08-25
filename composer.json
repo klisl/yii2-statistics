@@ -1,6 +1,6 @@
 {
     "name": "klisl/yii2-statistics",
-    "description": "Package",
+    "description": "Package for getting statistics by IP for your site in Yii-2",
   "type": "yii2-extension",
   "keywords": [
         "yii2",
