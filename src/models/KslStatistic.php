@@ -77,7 +77,7 @@ class KslStatistic extends ActiveRecord{
 
 
 
-    public function getCount($condition = null, $days_ago = null){
+    public function getCount($condition = null){
 
         $sec_todey = time() - strtotime('today'); //сколько секунд прошло с начала дня
 

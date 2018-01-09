@@ -7,41 +7,96 @@ use yii\web\Controller;
 use Klisl\Statistics\models\KslStatistic;
 
 
-
+/**
+ * Class StatController
+ * Контроллер модуля расширение
+ * @package Klisl\Statistics\controllers
+ */
 class StatController extends Controller
 {
 
+    /** @var string название шаблона */
     public $layout = 'main';
 
-    public function actionIndex($condition = [], $days_ago = null, $stat_ip = false)
+
+    /**
+     * Отвечает за вывод страницы статистики
+     *
+     * @param array $condition
+     * @param bool $stat_ip
+     * @return string|\yii\web\Response
+     */
+    public function actionIndex($condition = [], $stat_ip = false)
     {
-        // регистрируем ресурсы:
+
+        //регистрация ресурсов:
         \Klisl\Statistics\StatAssetsBundle::register($this->view);
 
-        $session = Yii::$app->session;
+        //проверка доступа к странице
+        $this->checkAccess();
 
+        $checkPassword = $this->checkPassword(); //проверка правильности ввода пароля
+        if(!$checkPassword) return $this->render('enter'); //на страницу входа
+
+        $count_model = new KslStatistic();
+        //Получение списка статистики
+        $count_ip = $count_model->getCount($condition);
+        //Преобразуем коллекцию к виду где более поздняя дата идет в начале
+        $count_ip = $count_model->reverse($count_ip);
+
+        /*
+         * Устанавливается значение полей по-умолчанию для вывода в полях формы
+         */
+        $count_model->date_ip = time(); //сегодня
+        $count_model->start_time = date('Y-m-01'); //первое число текущего месяца
+        $count_model->stop_time = time(); //сегодня
+
+        $black_list = $count_model->count_black_list();
+
+        return $this->render('index', [
+            'count_ip'=> $count_ip, //статистика
+            'stat_ip' => $stat_ip, //true если фильтр по определенному IP
+            'black_list' => $black_list,
+        ]);
+    }
+
+
+    /**
+     * Проверка доступа пользователя к просмотру страницы статистики
+     * перенаправление на страницу входа если не авторизован
+     *
+     * @return \yii\web\Response
+     */
+    public function checkAccess()
+    {
         //Если доступ разрешен только аутентифицированным пользователям
         $auth_config = KslStatistic::getParameters()['authentication'];
-
-        $user = Yii::$app->user->getId();
-
+        $user = Yii::$app->user->getId(); //авторизованный пользователь
 
         if ($auth_config && !$user) {
 
             $auth_route = KslStatistic::getParameters()['auth_route'];
 
-            //перенаправляем на страницу авторизации
+            //перенаправляем на страницу авторизации указанную в настройках
             if($auth_route){
-                return $this->redirect(Yii::$app->urlManager->createUrl([$auth_route]));
+                $this->redirect(Yii::$app->urlManager->createUrl([$auth_route]))->send();
             }
             else {
-                Yii::$app->user->loginRequired(); //на стандартную страницу авторизации
+                Yii::$app->user->loginRequired()->send(); //на стандартную страницу авторизации
             }
-
         }
 
+    }
 
-        //Проверка доступа по вводу пароля
+
+    /**
+     * Проверка пароля сохраненного в сессии для доступа к странице статистики
+     *
+     * @return string
+     */
+    public function checkPassword()
+    {
+        $session = Yii::$app->session;
         $password_config = KslStatistic::getParameters()['password'];
 
         if ($password_config) {
@@ -49,86 +104,40 @@ class StatController extends Controller
             $session_stat = $session->get('ksl-statistics');
 
             if (!$session_stat || ($session_stat !== $password_config)) {
-
-                return $this->render('enter');
+                return false;
             }
         }
-
-
-        $count_model = new KslStatistic(); //модель
-        //Получение списка статистики
-        $count_ip = $count_model->getCount($condition, $days_ago);
-        //Преобразуем коллекцию к виду где более поздняя дата идет в начале
-        $count_ip = $count_model->reverse($count_ip);
-
-
-		/*
-		 * Устанавливаем значение полей по-умолчанию для вывода в полях формы
-		 */
-		$count_model->date_ip = time(); //сегодня
-		$count_model->start_time = date('Y-m-01'); //первое число текущего месяца
-		$count_model->stop_time = time(); //сегодня
-
-        $black_list = $count_model->count_black_list();
-
-
-
-        return $this->render('index', [
-			'count_ip'=> $count_ip, //статистика
-			'stat_ip' => $stat_ip, //true если фильтр по определенному IP
-            'black_list' => $black_list,
-        ]);
+        return true;
     }
 
 
-
-
-
+    /**
+     * Обработка форм - форма входа и формы со страницы статистики
+     *
+     * @return string|\yii\web\Response
+     */
     public function actionForms(){
 
         $request = Yii::$app->request->post();
-
         $count_model = $request;
 
         $session = Yii::$app->session;
 
-        /*
-         * Форма входа на страницу статистики
-         */
+        //Валидация формы входа
         if(isset($count_model['enter'])) {
-
-            $password_config = KslStatistic::getParameters()['password'];
-
-            $password_enter = $request['password'];
-
-            if ($password_config == $password_enter) {
-
-                $session->set('ksl-statistics', $password_config);
-
-                return $this->redirect(Yii::$app->urlManager->createUrl('statistics/stat/index'));
-
-            } else {
-
-                // регистрируем ресурсы:
-                \Klisl\Statistics\StatAssetsBundle::register($this->view);
-
-                $session->setFlash('danger', 'Неверный пароль');
-
-                return $this->render('enter');
-            }
+            $validate = $this->validatePassword($request, $session);
+            if(!$validate) return false;
         }
-
 
         /*
          * Формы выбора параметров вывода статистики
          */
         $condition = [];
-		$days_ago = null;
         $stat_ip = false;
 
         $model = new KslStatistic();
 
-
+        
         //Сброс фильтров
         if(isset($count_model['reset'])){
             $condition = [];
@@ -205,7 +214,34 @@ class StatController extends Controller
             $model->remove_old();
         }
 
-        return $this->actionIndex($condition, $days_ago, $stat_ip);
+        return $this->actionIndex($condition, $stat_ip);
+    }
+
+
+    /**
+     * Проверка введенного пароля
+     *
+     * @param array $request
+     * @param yii\web\Session $session
+     * @return bool
+     */
+    public function validatePassword($request, $session)
+    {
+        $password_config = KslStatistic::getParameters()['password'];
+        $password_enter = $request['password'];
+
+        if ($password_config == $password_enter) {
+
+            $session->set('ksl-statistics', $password_config);
+            $this->redirect(Yii::$app->urlManager->createUrl('statistics/stat/index'))->send();
+
+        } else {
+            $session->setFlash('danger', 'Неверный пароль');
+
+            return false;
+        }
+
+        return true;
     }
 
 }
