@@ -2,14 +2,23 @@
 
 namespace Klisl\Statistics;
 
-use Yii;
+
 use yii\base\BootstrapInterface;
 
 
-
+/**
+ * Предзагрузка расширения
+ *
+ * @package Klisl\Statistics
+ */
 class Bootstrap implements BootstrapInterface{
 
-    //Метод, который вызывается автоматически при каждом запросе
+    /**
+     * Метод, который вызывается автоматически при каждом запросе
+     *
+     * @param \yii\base\Application $app
+     * @return void
+     */
     public function bootstrap($app)
     {
 

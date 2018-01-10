@@ -2,22 +2,31 @@
 
 namespace Klisl\Statistics;
 
+
 use Yii;
 use yii\base\Behavior;
 use yii\web\Controller;
 use Klisl\Statistics\models\KslStatistic;
 
 
-/*
+
+/**
  * Активирует счетчик статистики по событию EVENT_BEFORE_ACTION
  * для указанных действий контроллера в методе behaviors()
+ * @package Klisl\Statistics
+ *
  */
 class AddStatistics extends Behavior
 {
-
+    /** @var array $actions */
     public $actions; //для каких действий контроллера
 
 
+    /**
+     * Привязка вызова метода add к событию
+     *
+     * @return array
+     */
     public function events()
     {
         return [
@@ -26,13 +35,21 @@ class AddStatistics extends Behavior
     }
 
 
+    /**
+     * Сохранение данных посетителя в БД
+     *
+     * @return void
+     */
     public function add(){
 
-        $action_name = $this->owner->action->id; //название текущего действия
+        /** @var Controller $controller */
+        $controller = $this->owner;
+
+        $action_name = $controller->action->id; //название текущего действия
         if(array_search($action_name, $this->actions)=== FALSE) return;
 
         $ip = Yii::$app->request->userIP; //получаем IP текущего посетителя
-//        if($ip == '127.0.0.1') return;
+        // if($ip == '127.0.0.1') return;
 
         $count_model = new KslStatistic(); //модель
 
@@ -53,7 +70,13 @@ class AddStatistics extends Behavior
     }
 
 
-    //Проверяет, является ли посетитель роботом поисковой системы из перечня.
+
+    /**
+     * Проверяет, является ли посетитель роботом поисковой системы из перечня.
+     *
+     * @param string $botname
+     * @return bool|string
+     */
     public static function isBot(&$botname = ''){
         $bots = array(
             'rambler','googlebot','aport','yahoo','msnbot','turtle','mail.ru','omsktele',
