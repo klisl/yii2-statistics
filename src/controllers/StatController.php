@@ -48,8 +48,6 @@ class StatController extends Controller
          * Устанавливается значение полей по-умолчанию для вывода в полях формы
          */
         $count_model->date_ip = time(); //сегодня
-        $count_model->start_time = date('Y-m-01'); //первое число текущего месяца
-        $count_model->stop_time = time(); //сегодня
 
         $black_list = $count_model->count_black_list();
 
@@ -114,7 +112,7 @@ class StatController extends Controller
     /**
      * Обработка форм - форма входа и формы со страницы статистики
      *
-     * @return string|\yii\web\Response
+     * @return bool
      */
     public function actionForms(){
 
@@ -137,7 +135,7 @@ class StatController extends Controller
 
         $model = new KslStatistic();
 
-        
+
         //Сброс фильтров
         if(isset($count_model['reset'])){
             $condition = [];
@@ -214,7 +212,9 @@ class StatController extends Controller
             $model->remove_old();
         }
 
-        return $this->actionIndex($condition, $stat_ip);
+        $view = $this->actionIndex($condition, $stat_ip);
+        echo $view;
+
     }
 
 

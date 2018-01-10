@@ -2,6 +2,10 @@
 
 use yii\db\Migration;
 
+
+/**
+ * Миграция для создания таблицы ksl_ip_count расширения
+ */
 class m170306_083010_statistics extends Migration
 {
 

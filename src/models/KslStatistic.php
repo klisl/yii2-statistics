@@ -5,21 +5,34 @@ namespace Klisl\Statistics\Models;
 use Yii;
 use yii\db\ActiveRecord;
 
+
+/**
+ * Модель для работы расширения
+ *
+ * @package Klisl\Statistics\Models
+ *
+ * @property string $ip
+ * @property string $str_url
+ * @property integer $date_ip
+ * @property boolean $black_list_ip
+ */
 class KslStatistic extends ActiveRecord{
 
-    public $start_time;
-    public $stop_time;
-    public $add_black_list;
-    public $del_black_list;
-    public $del_old;
-    public $reset;
-
-
+    /**
+     * Название таблицы
+     *
+     * @return string
+     */
     public static function tableName()
     {
         return '{{%ksl_ip_count}}';
     }
 
+    /**
+     * Правила
+     *
+     * @return array
+     */
     public function rules()
     {
         return [
@@ -31,6 +44,11 @@ class KslStatistic extends ActiveRecord{
     }
 
 
+    /**
+     * Получение массива настроек расширения
+     *
+     * @return array
+     */
     public static function getParameters(){
         return [
 
@@ -52,9 +70,13 @@ class KslStatistic extends ActiveRecord{
     }
 
 
-
-    //проверка наличия IP в черном списке (которые не надо выводить и сохранять в БД)
-    //если есть хоть одна строка, то вернет true
+    /**
+     * Проверка наличия IP в черном списке (которые не надо выводить и сохранять в БД)
+     * если есть хоть одна строка, то вернет true
+     *
+     * @param string $ip
+     * @return bool
+     */
     public function inspection_black_list($ip){
 
         $check = $this
@@ -67,6 +89,13 @@ class KslStatistic extends ActiveRecord{
     }
 
 
+    /**
+     * Запись в БД
+     *
+     * @param string $ip
+     * @param string $str_url
+     * @param int $black_list_ip
+     */
     public function setCount($ip, $str_url, $black_list_ip = 0){
         $this->ip = $ip;
         $this->str_url = $str_url;
@@ -76,8 +105,11 @@ class KslStatistic extends ActiveRecord{
     }
 
 
-
-    public function getCount($condition = null){
+    /**
+     * @param array $condition
+     * @return array|ActiveRecord[]
+     */
+    public function getCount($condition = []){
 
         $sec_todey = time() - strtotime('today'); //сколько секунд прошло с начала дня
 
@@ -120,7 +152,11 @@ class KslStatistic extends ActiveRecord{
     }
 
 
-
+    /**
+     * Создание массива с IP и комментариями к ним из черного списка
+     *
+     * @return array
+     */
     public function count_black_list(){
         $black_list = (new \yii\db\Query())
             ->select('ip')
@@ -139,7 +175,13 @@ class KslStatistic extends ActiveRecord{
 
 
 
-    //Добавить в черн список
+    /**
+     * Добавление в черный список
+     *
+     * @param string $ip
+     * @param string $comment
+     * @return void
+     */
     public function set_black_list($ip, $comment=''){
 
         $verify_black_list = $this->find()->where(['=', 'ip', $ip])->all();
@@ -161,7 +203,6 @@ class KslStatistic extends ActiveRecord{
 
         $session = Yii::$app->session;
 
-
         if($res){
             $session->setFlash('success', 'IP '.$ip.' добавлен в черный список');
         } else {
@@ -170,8 +211,12 @@ class KslStatistic extends ActiveRecord{
     }
 
 
-
-    //Удаление из черного списка
+    /**
+     * Удаление из черного списка
+     *
+     * @param string $ip
+     * @return void
+     */
     public function remove_black_list($ip){
         $res = null;
 
@@ -187,14 +232,16 @@ class KslStatistic extends ActiveRecord{
         if($res){
             $session->setFlash('success', 'IP '.$ip.' удален из черного списка');
         } else {
-
             $session->setFlash('danger', 'Ошибка удаления IP из черного списка.');
         }
     }
 
 
-
-    //Удаление старых данных
+    /**
+     * Удаление старых данных
+     *
+     * @return void
+     */
     public function remove_old(){
 
         $today = time();
@@ -213,18 +260,22 @@ class KslStatistic extends ActiveRecord{
 
     }
 
-    /*
+    /**
      * Проверка был ли такой IP в течении текущих суток (0-24)
      * Если да, то не добавляем в общий счетчик посетителей за день
+     *
+     * @param string $ip
+     * @param integer $date
+     * @return array|ActiveRecord[]
      */
     public function find_ip_by_day($ip, $date){
 
-		//метка времени на начало указанного дня
-		$time = strtotime(date("d.m.Y",$date)); 
+        //метка времени на начало указанного дня
+        $time = strtotime(date("d.m.Y",$date));
 
         $time_now = $date - 1; //текущее время и день минус 1 секунда
 
-		
+
         $res = $this->find()
             ->where(['=','ip', $ip])
             ->andWhere(["between", "date_ip", $time , $time_now])
@@ -235,20 +286,23 @@ class KslStatistic extends ActiveRecord{
     }
 
 
-    /*
-    * Преобразуем коллекцию к виду, где элементы с более поздней датой идут в начале
-    * при этом часы/минуты/секунды в расчет не берутся
-    * Используется для вывода в начале таблицы текущей даты и дальше по убыванию
-    */
+    /**
+     * Преобразуем коллекцию к виду, где элементы с более поздней датой идут в начале
+     * при этом часы/минуты/секунды в расчет не берутся
+     * Используется для вывода в начале таблицы текущей даты и дальше по убыванию
+     *
+     * @param KslStatistic[] $count_ip
+     * @return KslStatistic[]
+     */
     public function reverse($count_ip){
 
 
         if(!empty($count_ip)){
 
-        /*
-         * Если дата у следующего элемента отличается, то
-         *
-         */
+            /*
+             * Если дата у следующего элемента отличается, то
+             *
+             */
             $array = [];
             $count = 0;
 
