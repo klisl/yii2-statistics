@@ -2,16 +2,18 @@
 
 namespace Klisl\Statistics;
 
-use Yii;
-use yii\web\Application;
+
 use yii\base\Module as BaseModule;
-use yii\base\Behavior;
 
 
-
+/**
+ * Модуль расширения
+ * @author Сергей Клименчук <ksl80@ukr.net>
+ * @package Klisl\Statistics
+ */
 class Module extends BaseModule
 {
-
+    /** @var string  */
     public $controllerNamespace = 'Klisl\Statistics\controllers';
 
 }
