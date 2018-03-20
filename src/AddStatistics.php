@@ -26,7 +26,8 @@ class AddStatistics extends Behavior
     }
 
 
-    public function add(){
+    public function add()
+    {
 
         $action_name = $this->owner->action->id; //название текущего действия
         if(array_search($action_name, $this->actions)=== FALSE) return;
@@ -40,7 +41,7 @@ class AddStatistics extends Behavior
         $str_url =  "http://" . $_SERVER['SERVER_NAME'] . $_SERVER["REQUEST_URI"]; //URL текущей страницы c параметрами
 
         //Проверка на бота
-        $bot_name = self::isBot();
+        $bot_name = self::isBot2();
         //$bot_name = 'rambler'; //для тестирования
 
         if(!$bot_name){
@@ -54,7 +55,8 @@ class AddStatistics extends Behavior
 
 
     //Проверяет, является ли посетитель роботом поисковой системы из перечня.
-    public static function isBot(&$botname = ''){
+    public static function isBot1(&$botname = '')
+    {
         $bots = array(
             'rambler','googlebot','aport','yahoo','msnbot','turtle','mail.ru','omsktele',
             'yetibot','picsearch','sape.bot','sape_context','gigabot','snapbot','alexa.com',
@@ -72,6 +74,16 @@ class AddStatistics extends Behavior
                 return $botname;
             }
         return false;
+    }
+
+    //Альтернативный метод проверки на бота
+    public static function isBot2()
+    {
+        $is_bot = preg_match(
+            "~(Google|Yahoo|Rambler|Bot|Yandex|Spider|Snoopy|Crawler|Finder|Mail|curl)~i",
+            $_SERVER['HTTP_USER_AGENT']
+        );
+        return $is_bot;
     }
 
 }

@@ -107,7 +107,9 @@ if (isset($count_ip[0])){
         }
 
         echo "<td>$transition</td>
-            <td><a href='http://speed-tester.info/ip_location.php?ip=".$value->ip."' target=\"_blank\">".$value->ip."</a></td>  	
+            <td><a id='api' href='".$value->ip."'>".$value->ip."</a></td>  
+            	
+            	
             <td colspan=\"2\"><a href='".$value->str_url."' target=\"_blank\">".$value->str_url."</a></td>                     
             <td>".date('d.m.Y H:i:s',$value->date_ip)."</td></tr>";
 

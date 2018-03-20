@@ -9,7 +9,6 @@ use yii\db\Migration;
 class m170306_083010_statistics extends Migration
 {
 
-    // Use safeUp/safeDown to run migration code within a transaction
     public function safeUp()
     {
 		$tableOptions = null;

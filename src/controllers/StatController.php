@@ -28,7 +28,6 @@ class StatController extends Controller
      */
     public function actionIndex($condition = [], $stat_ip = false)
     {
-
         //регистрация ресурсов:
         \Klisl\Statistics\StatAssetsBundle::register($this->view);
 
@@ -72,7 +71,6 @@ class StatController extends Controller
         $user = Yii::$app->user->getId(); //авторизованный пользователь
 
         if ($auth_config && !$user) {
-
             $auth_route = KslStatistic::getParameters()['auth_route'];
 
             //перенаправляем на страницу авторизации указанную в настройках
@@ -83,7 +81,6 @@ class StatController extends Controller
                 Yii::$app->user->loginRequired()->send(); //на стандартную страницу авторизации
             }
         }
-
     }
 
 
@@ -191,7 +188,6 @@ class StatController extends Controller
 
                 if(!isset($count_model['comment'])) $count_model['comment'] ='';
                 $model->set_black_list($count_model['ip'], $count_model['comment']);
-
             }
         }
 
@@ -199,7 +195,6 @@ class StatController extends Controller
         if(isset($count_model['del_black_list'])){
 
             if(!$count_model['ip']){
-
                 $session->setFlash('danger', 'Укажите IP для удаления из черного списка');
 
             } else {
@@ -214,7 +209,6 @@ class StatController extends Controller
 
         $view = $this->actionIndex($condition, $stat_ip);
         echo $view;
-
     }
 
 
@@ -231,16 +225,13 @@ class StatController extends Controller
         $password_enter = $request['password'];
 
         if ($password_config == $password_enter) {
-
             $session->set('ksl-statistics', $password_config);
             $this->redirect(Yii::$app->urlManager->createUrl('statistics/stat/index'))->send();
 
         } else {
             $session->setFlash('danger', 'Неверный пароль');
-
             return false;
         }
-
         return true;
     }
 
