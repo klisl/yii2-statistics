@@ -41,7 +41,9 @@ jQuery(document).ready(function($){
     function showStickyErrorToast(data) {
 
         if(data){
-            var html = "<p>Страна: " + data.country.name_ru + "</p><p>Город: " + data.city.name_ru + "</p>";
+            var html = "<p>Страна: " + data.country.name_ru + "</p>" +
+                "<p>Регион: " + data.region.name_ru + "</p>" +
+                "<p>Город: " + data.city.name_ru + "</p>";
         } else {
             var html = "<p>Информация недоступна.</p>";
         }
