@@ -11,7 +11,7 @@ jQuery(document).ready(function($){
         }
 
         $.ajax({
-            url:'http://api.sypexgeo.net/json/' + ip,
+            url:'//api.sypexgeo.net/json/' + ip,
             // data: data,
             type: 'GET',
             datatype: 'JSON', //формат данных которые должен передать сервер
@@ -50,7 +50,7 @@ jQuery(document).ready(function($){
 
         $().toastmessage('showToast', {
             text     : html,
-            sticky   : true,
+            sticky   : false,
             position : 'top-right',
             type     : 'notice',
             closeText: '',

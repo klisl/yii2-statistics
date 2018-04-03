@@ -52,8 +52,8 @@ class AddStatistics extends Behavior
 
         $count_model = new KslStatistic(); //модель
 
-
-        $str_url =  "http://" . $_SERVER['SERVER_NAME'] . $_SERVER["REQUEST_URI"]; //URL текущей страницы c параметрами
+		$protocol = stripos($_SERVER['SERVER_PROTOCOL'],'https') === true ? 'https://' : 'http://';
+        $str_url =  $protocol . $_SERVER['SERVER_NAME'] . $_SERVER["REQUEST_URI"]; //URL текущей страницы c параметрами
 
         //Проверка на бота
         $bot_name = self::isBot2();
